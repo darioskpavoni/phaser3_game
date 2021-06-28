@@ -31,8 +31,7 @@ export default class HelloWorldScene extends Phaser.Scene
 
         const ground = this.platforms.create(400,568,'ground') as Phaser.Physics.Arcade.Sprite;
 
-        ground
-            .setScale(2)
+        ground.setScale(1)
             .refreshBody()
 
         this.platforms.create(600, 400,'ground');

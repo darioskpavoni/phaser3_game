@@ -105,7 +105,20 @@ export default class HelloWorldScene extends Phaser.Scene
         });
 
         // Adding bombs + collision with platforms + collision with player
-        this.bombs = this.physics.add.group();
+       /*  this.bombs = this.physics.add.group({
+            key: 'bomb',
+            repeat: 6,
+            setXY: { x: 12, y:0, stepX: 80 },
+            "setScale.x": 2
+        })
+        this.physics.add.collider(this.bombs,this.platforms);
+        this.physics.add.collider(this.player,this.bombs,this.hitBomb,undefined,this); */
+
+        this.bombs = this.physics.add.group({
+            key: 'bomb',
+
+        });
+
         this.physics.add.collider(this.bombs,this.platforms);
         this.physics.add.collider(this.player,this.bombs,this.hitBomb,undefined,this);
 

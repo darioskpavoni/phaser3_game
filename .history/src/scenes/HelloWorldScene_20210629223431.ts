@@ -12,6 +12,9 @@ export default class HelloWorldScene extends Phaser.Scene
     private scoreText?: Phaser.GameObjects.Text;
 
     private gameOver = false;
+    
+    private bombPos?: integer;
+    private bomb?: Phaser.Physics.Arcade.Group;
 
 	constructor()
 	{
@@ -105,7 +108,12 @@ export default class HelloWorldScene extends Phaser.Scene
         });
 
         // Adding bombs + collision with platforms + collision with player
-        this.bombs = this.physics.add.group();
+        this.bombs = this.physics.add.group({
+            key: 'bomb',
+            repeat: 6,
+            setXY: { x: 12, y:0, stepX: 80 },
+            "setScale.x": 2
+        })
         this.physics.add.collider(this.bombs,this.platforms);
         this.physics.add.collider(this.player,this.bombs,this.hitBomb,undefined,this);
 
@@ -120,35 +128,25 @@ export default class HelloWorldScene extends Phaser.Scene
         this.score += 10;
         this.scoreText?.setText(`Score: ${this.score}`);
 
-        if (this.stars?.countActive(true) === 0 )
-        {
+        if (this.stars?.countActive(true) === 0) {
             this.stars.children.iterate(c => {
                 const child = c as Phaser.Physics.Arcade.Image;
                 child.enableBody(true, child.x, 0, true, true);
-            })
+            });
+
+            this.bombPos = (this.player.x < 400) ? Phaser.Math.Between(400,800) : Phaser.Math.Between(0,400);
+
+            
+
         }
-
-        if (this.player)
-        { 
-            const x = this.player.x < 400 ? Phaser.Math.Between(400,800) : Phaser.Math.Between(0,400);
-
-            const bomb: Phaser.Physics.Arcade.Image = this.bombs?.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200,200),20);
-        }
-
-        
     }
 
-    private hitBomb(player: Phaser.GameObjects.GameObject, b: Phaser.GameObjects.GameObject)
+    private hitBomb(player: Phaser.GameObjects.GameObject, b: Phaser.GameObjects.GameObject) 
     {
-        const bomb = b as Phaser.Physics.Arcade.Image;
         this.physics.pause();
         this.player?.setTint(0xff0000);
         this.player?.anims.play('turn');
         this.gameOver = true;
-
     }
 
     update()
